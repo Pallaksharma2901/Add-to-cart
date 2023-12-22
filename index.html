@@ -37,7 +37,43 @@
 
  
     <script>
-        
+        let product = [
+            { title: "acne", desc: "Acne Treatment Cream", url: "./asset/images/img1.webp", price: "200" },
+            { title: "Cleanse", desc: "Gentle Skin Cleanser", url: "./asset/images/img2.webp", price: "250" },
+            { title: "Oil-free", desc: "Oil Free Cream Face Wash", url: "./asset/images/img3.webp", price: "280" },
+            { title: "Retinoal", desc: "Retinoal Face Moistrurizer", url: "./asset/images/img4.webp", price: "300" },
+            { title: "Hair Spray", descc: "Coconut Curly Hair Spray", url: "./asset/images/img5.webp", price: "350" },
+            { title: "Detangling", desc: "Detangling Hair Spray", url: "./asset/images/img6.webp", price: "320" },
+            { title: "Day Cream", desc: "Quick Action Day Cream", url: "./asset/images/img7.webp", price: "400" },
+            { title: "Body Lotion", desc: "Shea Butter Body Lotion", url: "./asset/images/img8.webp", price: "300" },
+        ]
+
+        window.addEventListener("DOMContentLoaded",() => {
+            let cartProducts = JSON.parse(localStorage.getItem("cart-data")) || [];
+            let count = document.getElementById("count"); 
+            count.innerHTML = cartProducts.length;          
+        });
+        let cards = '';
+
+        product.forEach(function (product, idx) {
+            cards += `  
+                <div class="w-3">
+                    <div class="card position-relative">
+                        <div class="cart-image text-center">
+                            <img src="${product.url}" class="card-img-top" alt="...">    
+                        </div>
+                        <div class="card-body">
+                            <h3 class="product-name text-center text-muted-2 fw-semibold">${product.title}</h3>
+                            <p class="card-text text-center text-muted fw-bold">${product.desc}</p>
+                            <p class="card-text text-center text-muted-2">Rs. <span class="product-price">${product.price}</span></p>
+                            <div class="cart-btn-wrapper d-flex align-items-center justify-content-center">
+                                <button class="addbutton mt-3 mb-2" onclick="addCart(${idx})">Add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }); 
 
         const entireCard = document.querySelector(".all-cards");
         entireCard.innerHTML = cards;
