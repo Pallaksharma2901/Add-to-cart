@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="asset/css/view-cart.css">
+    <link rel="stylesheet" href="asset/css/style.css">
+</head>
+
+<body>
+
+    <div id="header"></div>
+
+    <div class="container-fluid mt-5">
+        <h2 class="mb-5 text-center">Shopping Cart</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="table-responsive">
+                    <table id="myTable" class="table text-center">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Name</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th class="text-right"><span id="amount" class="amount">Amount</span> </th>
+                                <th>Close</th> <!-- Add Close column -->
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td class=""><strong>TOTAL = ₹ <span id="total" class="total">0</span></strong></td>
+                                <td></td> <!-- Add an empty column for spacing -->
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="asset/js/header.js"></script>
+    <script>
+        let cartData = JSON.parse(localStorage.getItem('cart-data')) || [];
+        const tableBody = document.getElementById('tableBody');
+        const totalElement = document.getElementById('total');
+        let cartProducts = JSON.parse(localStorage.getItem("cart-data")) || [];
+
+        function updateCartTable() {
+            tableBody.innerHTML = '';
+            let subtotal = 0;
+
+            cartData.forEach((data, idx) => {
+                const amount = data.qty * data.price;
+                console.log(data.qty, data.price);
+                subtotal += amount;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>
+                    <div class="product-img">
+                        <div class="img-prdct"><img src="${data.image}"></div>
+                    </div>
+                </td>
+                <td>
+                    <p>${data.name}</p>
+                </td>
+                <td>
+                    <div class="button-container">
+                        <button class="cart-qty-minus" type="button">-</button>
+                        <input type="text" name="qty" min="1" class="qty form-control" value="${data.qty}">
+                        <button class="cart-qty-plus" type="button">+</button>
+                    </div>
+                </td>
+                <td>
+                    <p>${data.price}</p>
+                </td>
+                <td>₹ <span class="amount">${amount}</span></td>
+                <td><button class="close-button">Close</button></td>
+            `;
+                tableBody.appendChild(row);
+                const plusButton = row.querySelector('.cart-qty-plus');
+                const minusButton = row.querySelector('.cart-qty-minus');
+                const closeButton = row.querySelector('.close-button');
+
+                plusButton.addEventListener('click', () => {
+                    const qtyInput = row.querySelector('.qty');
+                    const qty = parseInt(qtyInput.value);
+                    cartData[idx].qty = qty + 1;
+                    localStorage.setItem('cart-data', JSON.stringify(cartData));
+                    updateCartTable();
+                });
+
+                minusButton.addEventListener('click', () => {
+                    const qtyInput = row.querySelector('.qty');
+                    const qty = parseInt(qtyInput.value);
+                    if (qty > 1) {
+                        cartData[idx].qty = qty - 1;
+                        localStorage.setItem('cart-data', JSON.stringify(cartData));
+                        updateCartTable();
+                    }
+                });
+
+                closeButton.addEventListener('click', () => {
+                    cartData.splice(idx, 1);
+                    localStorage.setItem('cart-data', JSON.stringify(cartData));
+                    updateCartTable();
+                });
+            });
+
+            totalElement.textContent = subtotal;
+
+
+            let count = document.getElementById("count"); 
+            count.innerHTML = cartProducts.length;
+            console.log(count);
+            localStorage.setItem("cart-data", JSON.stringify(cartProducts));
+        }
+
+
+        updateCartTable();
+
+
+
+    </script>
+</body>
+
+</html>
